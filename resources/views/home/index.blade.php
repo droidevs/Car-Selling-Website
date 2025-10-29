@@ -1,9 +1,4 @@
-@extends('layouts.app')
-
-@section('title', 'Home Page')
-
-@section('content')
-
+<x-app-layout title="Home Page">
     <section class="hero-slider">
         <!-- Carousel wrapper -->
         <div class="hero-slides">
@@ -92,8 +87,8 @@
     </section>
     <main>
         @php
-            $color = "red";
-            $bg = 'blue';
+$color = "red";
+$bg = 'blue';
         @endphp
         <x-card :$color :bgColor="$bg">
             <x-slot:title class="card-header-blue"> Card title 1 </x-slot>
@@ -673,4 +668,11 @@
         </section>
         <!--/ New Cars -->
     </main>
-@endsection
+
+    <x-slot:footerLinks>
+    <a href="#">Links 3</a>
+    <a href="#">Links 4</a>
+    </x-slot:footerLinks>
+    
+</x-app-layout>
+
