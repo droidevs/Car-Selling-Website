@@ -23,11 +23,12 @@
         </div>
         <button class="btn btn-primary btn-login w-full">Register</button>
     </form>
-    
+
     <x-slot:footerLink>
          Already have an account? -
         <a href="/login.html"> Click here to login </a>
     </x-slot:footerLink>
+    
 </x-gest-layout>
 
 
