@@ -33,6 +33,36 @@ class Car extends Model
         "deleted_at",
     ];
 
+    public function carType(): BelongsTo
+    {
+        return $this->belongsTo(CarType::class, 'car_id');
+    }
+
+    public function fuelType(): BelongsTo
+    {
+        return $this->belongsTo(FuelType::class);
+    }
+
+    public function maker(): BelongsTo
+    {
+        return $this->belongsTo(Maker::class);
+    }
+
+    public function model(): BelongsTo
+    {
+        return $this->belongsTo(Model::class);
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
     public function features(): HasOne
     {
         return $this->hasOne(CarFeatures::class, 'car_id');
@@ -47,11 +77,6 @@ class Car extends Model
     public function images() : HasMany
     {
         return $this->hasMany(CarImage::class,'car_id');
-    }
-
-    public function carType(): BelongsTo
-    {
-        return $this->belongsTo(CarType::class, 'car_id');
     }
 
     public function favouredUsers() : BelongsTo
