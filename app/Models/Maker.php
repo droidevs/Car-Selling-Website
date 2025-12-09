@@ -23,7 +23,7 @@ class Maker extends Model
 
     public function models(): HasMany
     {
-        return $this->hasMany(related: Model::class);
+        return $this->hasMany(related: \App\Models\Model::class);
     }
-    
+
 }
