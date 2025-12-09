@@ -16,10 +16,9 @@ class FavouriteCarsSeeder extends Seeder
     {
         $users = User::all();
         $cars = Car::pluck('id');
-
         foreach($users as $user) {
             $user->favouriteCars()->attach(
-                $cars->random(10)
+                $cars->random(10)->toArray()
             );
         }
     }
