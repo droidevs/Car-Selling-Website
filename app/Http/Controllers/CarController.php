@@ -15,6 +15,7 @@ class CarController extends Controller
     {
         $cars = User::find(1)
             ->cars()
+            ->with(['primaryImage','maker','model'])
             ->orderBy('created_at', 'desc')
             ->get();
 
