@@ -1,4 +1,3 @@
-@props(['cars'])
 <x-app-layout>
     <main>
         <!-- Found Cars -->

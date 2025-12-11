@@ -24,7 +24,7 @@
             @endforeach
           </div>
 
-          {{ $cars->onEachSide(1)->links() }}
+          {{ $cars->onEachSide(1)->links('pagination') }}
         </div>
       </section>
       <!--/ New Cars -->
