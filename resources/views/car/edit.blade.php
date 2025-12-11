@@ -3,9 +3,10 @@
     <main>
         <div class="container-small">
             <h1 class="car-details-page-title">Update Car With ID: {{ $car->id }}</h1>
-            <form action="{{ route('car.store') }}" method="POST" enctype="multipart/form-data"
+            <form action="{{ route('car.update',$car) }}" method="POST" enctype="multipart/form-data"
                 class="card add-new-car-form">
                 @csrf
+                @method('PUT')
                 <div class="form-content">
                     <div class="form-details">
                         <div class="row">

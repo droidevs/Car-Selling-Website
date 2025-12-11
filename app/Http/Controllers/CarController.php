@@ -144,22 +144,23 @@ class CarController extends Controller
      */
     public function update(UpdateCarRequest $request, Car $car)
     {
+        dd($request->all());
         DB::transaction(function () use ($request, $car) {
             // Update main Car attributes
-            $car->update($request->only([
-                'maker_id',
-                'model_id',
-                'year',
-                'car_type_id',
-                'price',
-                'vin',
-                'mileage',
-                'fuel_type_id',
-                'city_id',
-                'address',
-                'phone',
-                'description',
-            ]));
+            $car->update([
+                'maker_id'     => $request->maker,
+                'model_id'     => $request->model,
+                'year'         => $request->year,
+                'car_type_id'  => $request->car_type,
+                'price'        => $request->price,
+                'vin'          => $request->vin,
+                'mileage'      => $request->mileage,
+                'fuel_type_id' => $request->fuel_type,
+                'city_id'      => $request->city,
+                'address'      => $request->address,
+                'phone'        => $request->phone,
+                'description'  => $request->description,
+            ]);
 
             // Update or create features
             $featuresData = $request->only([
