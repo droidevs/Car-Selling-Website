@@ -32,6 +32,22 @@ class CarFeatures extends Model
 	    "updated_at",
     ];
 
+    protected $casts = [
+        'air_conditioning' => 'boolean',
+        'power_windows' => 'boolean',
+        'power_door_locks' => 'boolean',
+        'abs' => 'boolean',
+        'cruise_control' => 'boolean',
+        'bluetooth_connectivity' => 'boolean',
+
+        'remote_start' => 'boolean',
+        'gps_navigation' => 'boolean',
+        'heated_seats' => 'boolean',
+        'climate_control' => 'boolean',
+        'rear_parking_sensors' => 'boolean',
+        'leather_seats' => 'boolean',
+    ];
+
     public function car(): BelongsTo
     {
         return $this->belongsTo(Car::class);

@@ -16,7 +16,7 @@ class CarImage extends Model
         "position"
     ];
 
-    public function fuelType(): BelongsTo
+    public function car(): BelongsTo
     {
         return $this->belongsTo(Car::class);
     }

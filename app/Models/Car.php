@@ -28,6 +28,7 @@ class Car extends Model
         "address",
         "phone",
         "description",
+
         "published_at",
         "created_at",
         "updated_at",

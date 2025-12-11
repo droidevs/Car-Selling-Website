@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCarRequest;
 use App\Models\Car;
+use App\Models\CarType;
+use App\Models\Maker;
+use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -11,13 +15,16 @@ class CarController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $cars = User::find(1)
             ->cars()
             ->with(['primaryImage','maker','model'])
             ->orderBy('created_at', 'desc')
-            ->paginate(5);
+            ->paginate(5)
+//          ->withPath('/users/cars');
+//          ->appends(['sort' => 'price'])
+            ->withQueryString();
 
         return view('car.index',['cars' => $cars]);
     }
@@ -27,21 +34,86 @@ class CarController extends Controller
      */
     public function create()
     {
-        return view('car.create');
+        $makers = Maker::all();
+        $models = \App\Models\Model::all();
+        $years = range(date('Y'), 1950);
+        $types = CarType::all();
+        $states = State::all();
+
+
+        return view(
+            'car.create',
+            ['makers' => $makers, 'models' => $models, 'years' => $years, 'types' => $types, 'states' => $states]
+        );
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCarRequest $request)
     {
-        //
+        // ----------------------------------------
+        // 1. CREATE THE CAR
+        // ----------------------------------------
+        $car = Car::create([
+            'maker_id'     => $request->maker_id,
+            'model_id'     => $request->model_id,
+            'year'         => $request->year,
+            'price'        => $request->price,
+            'vin'          => $request->vin,
+            'mileage'      => $request->mileage,
+            'car_type_id'  => $request->car_type_id,
+            'fuel_type_id' => $request->fuel_type_id,
+            'city_id'      => $request->city_id,
+
+            'address'      => $request->address,
+            'phone'        => $request->phone,
+            'description'  => $request->description,
+
+            'published_at' => now(),
+        ]);
+
+        // ----------------------------------------
+        // 2. CREATE FEATURES
+        // ----------------------------------------
+        $car->features()->create([
+            'abs'                      => $request->boolean('abs'),
+            'air_conditioning'         => $request->boolean('air_conditioning'),
+            'power_windows'            => $request->boolean('power_windows'),
+            'power_door_locks'         => $request->boolean('power_door_locks'),
+            'cruise_control'           => $request->boolean('cruise_control'),
+            'bluetooth_connectivity'   => $request->boolean('bluetooth_connectivity'),
+
+            'remote_start'             => $request->boolean('remote_start'),
+            'gps_navigation'           => $request->boolean('gps_navigation'),
+            'heated_seats'             => $request->boolean('heated_seats'),
+            'climate_control'          => $request->boolean('climate_control'),
+            'rear_parking_sensors'     => $request->boolean('rear_parking_sensors'),
+            'leather_seats'            => $request->boolean('leather_seats'),
+        ]);
+
+        // ----------------------------------------
+        // 3. SAVE IMAGES
+        // ----------------------------------------
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $i => $image) {
+                $path = $image->store("car_images/{$car->id}", 'public');
+
+                $car->images()->create([
+                    'image_path' => $path,
+                    'position'   => $i, // gallery ordering
+                ]);
+            }
+        }
+
+        return redirect()->route('car.index')
+            ->with('success', 'Car created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Car $car)
+    public function show(Request $request, Car $car)
     {
         return view('car.show',['car' => $car]);
     }
