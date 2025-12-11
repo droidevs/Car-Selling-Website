@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -81,9 +82,9 @@ class Car extends Model
         return $this->hasMany(CarImage::class,'car_id');
     }
 
-    public function favouredUsers() : BelongsTo
+    public function favouredUsers() : BelongsToMany
     {
-        $this->belongsToMany(User::class,'favourite_cars','car_id','user_id');
+        return $this->belongsToMany(User::class,'favourite_cars','car_id','user_id');
     }
 
     public function getCreateDate() : string
