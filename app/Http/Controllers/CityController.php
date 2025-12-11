@@ -7,10 +7,6 @@ use Illuminate\Http\JsonResponse;
 
 class CityController extends Controller
 {
-    public function __construct()
-    {
-
-    }
 
     public function index(GetCitiesRequest $request): JsonResponse
     {
