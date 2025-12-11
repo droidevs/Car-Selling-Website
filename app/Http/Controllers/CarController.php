@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCarRequest;
+use App\Http\Requests\UpdateCarRequest;
 use App\Models\Car;
 use App\Models\CarType;
+use App\Models\City;
+use App\Models\FuelType;
 use App\Models\Maker;
 use App\Models\State;
 use App\Models\User;
+use DB;
 use Illuminate\Http\Request;
 
 class CarController extends Controller
@@ -39,11 +43,13 @@ class CarController extends Controller
         $years = range(date('Y'), 1950);
         $types = CarType::all();
         $states = State::all();
-
+        $cities = City::all();
 
         return view(
             'car.create',
-            ['makers' => $makers, 'models' => $models, 'years' => $years, 'types' => $types, 'states' => $states]
+            ['makers' => $makers, 'models' => $models,
+             'years' => $years, 'types' => $types,
+             'states' => $states, 'cities' => $cities]
         );
     }
 
@@ -65,7 +71,6 @@ class CarController extends Controller
             'car_type_id'  => $request->car_type_id,
             'fuel_type_id' => $request->fuel_type_id,
             'city_id'      => $request->city_id,
-
             'address'      => $request->address,
             'phone'        => $request->phone,
             'description'  => $request->description,
@@ -123,15 +128,62 @@ class CarController extends Controller
      */
     public function edit(Car $car)
     {
-        return view('car.edit');
+        return view('car.edit', ['car' => $car,
+            'makers' => Maker::all(),
+            'models' => \App\Models\Model::all(),
+            'years' => range(date('Y'), 1950),
+            'car_types' => CarType::all(),
+            'fuel_types' => FuelType::all(),
+            'states' => State::all(),
+            'cities' => City::all(),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Car $car)
+    public function update(UpdateCarRequest $request, Car $car)
     {
-        //
+        DB::transaction(function () use ($request, $car) {
+            // Update main Car attributes
+            $car->update($request->only([
+                'maker_id',
+                'model_id',
+                'year',
+                'car_type_id',
+                'price',
+                'vin',
+                'mileage',
+                'fuel_type_id',
+                'city_id',
+                'address',
+                'phone',
+                'description',
+            ]));
+
+            // Update or create features
+            $featuresData = $request->only([
+                'air_conditioning',
+                'power_windows',
+                'power_door_locks',
+                'abs',
+                'cruise_control',
+                'bluetooth_connectivity',
+                'remote_start',
+                'gps_navigation',
+                'heated_seats',
+                'climate_control',
+                'rear_parking_sensors',
+                'leather_seats',
+            ]);
+
+            $car->features()->updateOrCreate(
+                ['car_id' => $car->id],
+                $featuresData
+            );
+        });
+
+        return redirect()->route('car.show', $car)->with('success', 'Car updated successfully.');
     }
 
     /**

@@ -104,7 +104,10 @@
                                 <div class="form-group">
                                     <label>City</label>
                                     <select name="city">
-                                        <option value="">City</option>
+                                        <option value="-1">Select City</option>
+                                        @foreach ($cities as $city)
+                                            <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                        @endforeach
                                     </select>
                                     <script>
                                         const stateSelect = document.querySelector('select[name="state"]');
