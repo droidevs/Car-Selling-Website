@@ -67,7 +67,8 @@ class CarController extends Controller
      */
     public function destroy(Car $car)
     {
-        //
+        $car->delete();
+        return redirect()->route('car.index');
     }
 
     public function search()
@@ -76,18 +77,17 @@ class CarController extends Controller
             ->with(['primaryImage','city','carType','fuelType','maker','model'])
             ->orderBy('published_at','desc');
 
-        $carCount = $query->count();
-        $cars = $query->limit(30)->get();
+        $cars = $query->paginate(5);
 
-        return view('car.search',['cars' => $cars, 'carCount' => $carCount]);
+        return view('car.search',['cars' => $cars]);
     }
 
     public function watchlist() {
         $cars = User::find(1)
             ->favouriteCars()
             ->with(['primaryImage','city','carType','fuelType','maker','model'])
-            ->get();
-        dump($cars);
+            ->paginate(15);
+
         return view('car.watchlist',['cars' => $cars]);
     }
 }
